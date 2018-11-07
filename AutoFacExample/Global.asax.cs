@@ -1,4 +1,8 @@
-﻿using System;
+﻿using Autofac;
+using Autofac.Integration.Mvc;
+using AutoFacExample.Domain.Service.Abstract;
+using AutoFacExample.Domain.Service.Concrete;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -12,6 +16,23 @@ namespace AutoFacExample
     {
         protected void Application_Start()
         {
+            var builder = new ContainerBuilder();
+
+            builder.RegisterType<ExampleService>().As<IExampleService>();
+
+            builder.RegisterControllers(typeof(MvcApplication).Assembly);
+
+            builder.RegisterModelBinders(typeof(MvcApplication).Assembly);
+            builder.RegisterModelBinderProvider();
+
+            builder.RegisterModule<AutofacWebTypesModule>();
+            builder.RegisterSource(new ViewRegistrationSource());
+
+            builder.RegisterFilterProvider();
+
+            var container = builder.Build();
+            DependencyResolver.SetResolver(new AutofacDependencyResolver(container));
+
             AreaRegistration.RegisterAllAreas();
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);

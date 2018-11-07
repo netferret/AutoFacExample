@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AutoFacExample.Domain.Service.Abstract;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -8,23 +9,18 @@ namespace AutoFacExample.Controllers
 {
     public class HomeController : Controller
     {
+        private IExampleService _exampleService;
+
+        public HomeController(IExampleService exampleService)
+        {
+            _exampleService = exampleService;
+        }
+
         public ActionResult Index()
         {
+            var result = _exampleService.GetMessage("Welcome to our first example using AutoFac.");
             return View();
         }
-
-        public ActionResult About()
-        {
-            ViewBag.Message = "Your application description page.";
-
-            return View();
-        }
-
-        public ActionResult Contact()
-        {
-            ViewBag.Message = "Your contact page.";
-
-            return View();
-        }
+        
     }
 }
